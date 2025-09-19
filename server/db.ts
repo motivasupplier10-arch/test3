@@ -1,0 +1,70 @@
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import * as schema from "@shared/schema";
+import * as fs from 'fs';
+
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "DATABASE_URL must be set. Did you forget to provision a database?",
+  );
+}
+
+// function buildSslOption() {
+//   // Dev hotfix: allow self-signed (unsafe; controlled by env)
+//   if ((process.env.PGSSL ?? '').toLowerCase() === 'require' &&
+//       (process.env.PGSSL_REJECT_UNAUTH ?? '1') === '0') {
+//     return { rejectUnauthorized: false } as const;
+//   }
+//   // Proper CA verification
+//   if (process.env.PGSSL_CA && fs.existsSync(process.env.PGSSL_CA)) {
+//     return { ca: fs.readFileSync(process.env.PGSSL_CA, 'utf8') } as const;
+//   }
+//   // No SSL (local non-SSL DB)
+//   return undefined;
+// }
+
+// export const pool = new Pool({ 
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: buildSslOption()
+// });
+
+
+const config = {
+    user: "avnadmin",
+    password: "AVNS_rco5unGbxFVaIBoNOmo",
+    host: "pg-10abc461-maqdoomec-dae0.i.aivencloud.com",
+    port: 22610,
+    database: "mangal2",
+    ssl: {
+        rejectUnauthorized: true,
+        ca: `-----BEGIN CERTIFICATE-----
+MIIEUDCCArigAwIBAgIUMm8diA1Wut7o8hKQNpVD69+/k1cwDQYJKoZIhvcNAQEM
+BQAwQDE+MDwGA1UEAww1NDcwNTIwZTAtMzA3ZC00ZTY2LTlmNzYtNGQ2NjJjZjc3
+NWMzIEdFTiAxIFByb2plY3QgQ0EwHhcNMjUwOTE4MjAwMTM0WhcNMzUwOTE2MjAw
+MTM0WjBAMT4wPAYDVQQDDDU0NzA1MjBlMC0zMDdkLTRlNjYtOWY3Ni00ZDY2MmNm
+Nzc1YzMgR0VOIDEgUHJvamVjdCBDQTCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCC
+AYoCggGBAKShkLHQOtqDNdAl4FvXTReyyhkv78hd8ag1WBkS+y8flFJUP7Zmc7gP
+j8yuBx8GYmOwsNzD43kXIQJPcT2750cdu2MdYFKTL81wt0MKSOj+6ig4Q4cdewhp
+dkxRpjnGvms6hQsH4t4Qlvu64ZpNERym0QWTwLZEWABi71rhzDPVD8FzVcv92fPt
+74foErPI1Ut8prqSTunwgeJbJxn8rLA5LRBDZ86hCjubODqoOaivAzCWtk4Cdset
+jcz8l/p49c8Vu5Tr2SBx61LaKxcryUc6/4YU3tM8tTnw9zSCcISADcEEFqU+RRY6
+zAnsGGIJ7YaFUKrx0lwKaptp6EpSdOoI/bFctNTW3ODZZRk2D94bs5Q7G0Futqz5
+QoYRnWI3uzfdEuLrrzAfOI7N3Lm/Ol56KggZLWLR4sK88TYHPL5/0uYiGH2VXxle
+mvd3M/+g5ARIbsWUTQHyv9LHpxa7yBmjfvaQuZEWjAjtkKl05tMJkKMnTsKDlHo8
+mgOj60gpCQIDAQABo0IwQDAdBgNVHQ4EFgQU8PB7f5YL0SXJLUga8hLnSRqw33Aw
+EgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEMBQAD
+ggGBAIFhu3O4+9T1Dfo3N9hNo7QGtFkIb19DxThqEqfTvltdLHysQwJPq5IxdDI+
+p373XCsS9aNGYcB9kRQ0YxYHUXe9sQYUYTh1sfHEwwHZ2I2sUoIoNXI8XJWOKDZc
+DF17yjx18Fe3uwptfGfVLAscH2drbI5vTVt/A3CJfjpimM7DL9Vl+uEoseq3T2dS
+dQODgkz9VbJdxkjN/tMzkNq7dToguUPg9YKMmunxAe60fmxnhCQ9VaFN3FpPejqR
+6TR6IiUlnpOy1ns1tCm6JOTfUVcDmIN8kU3+8E7Ej4tKRfaXhe1mtpjTvNrJJT9h
+eCJHdV6o3eVufi5e5q2pD6sIMmjZ29Ttxf63NKH0eisrRY7TOGaeSc6FiXr7VcOZ
+Pl+YxZ7YFpvcGtz8E/xfBqZ5Fpxl74Y5sCiaBoKLLCeRE1H3XRUqpAymXS5KdfqZ
+C817tS2UmwFpzVTTG4J/5AeZfm2qqkPYrHe7NAtChFSy+X+yl2DfGn3T/LRtfnP9
+CueqBQ==
+-----END CERTIFICATE-----`,
+    },
+};
+export const pool = new Pool(config);
+
+export const db = drizzle({ client: pool, schema });
